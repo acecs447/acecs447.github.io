@@ -1,0 +1,103 @@
+<!doctype html>
+<html>
+<head>
+<title>Ace Software - Statistics</title>
+
+
+<!-- styling stuff to make it look good -->
+
+<!-- material css from materialize website google it! -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/css/materialize.min.css">
+
+<!-- material javascript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/js/materialize.min.js"></script>
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script type="text/javascript" src="http://www.parsecdn.com/js/parse-latest.js"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+
+<script type="text/javascript">
+    Parse.initialize("kFx7BGPyohCH77X74mgK3FFtuDbuZNfrVfNxIJEK", "w52hrsYOBvXd5v1r0Gxk6qm5xjxP1XAnJCgWyOpx");
+    var StatData = Parse.Object.extend("StatData");
+    var query = new Parse.Query(StatData);    
+
+    google.load('visualization', '1.1', {packages: ['line']});
+    google.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+
+      var data = new google.visualization.DataTable();
+      data.addColumn('number', 'Trial Run');
+      data.addColumn('number', 'segregation');
+      data.addColumn('number', 'sumAvgShake');
+      data.addColumn('number', 'sumAvgBored');
+      data.addColumn('number', 'maxSegregation');
+
+      query.find({
+      success: function(results) {
+        //alert("Successfully retrieved " + results.length + " values.");
+        // Do something with the returned Parse.Object values
+        for (var i = 0; i < results.length; i++) {
+          var object = results[i];
+          data.addRow([i+1, object.get('segregation'), object.get('sumAvgShake'), object.get('sumAvgBored'), object.get('maxSegregation')]);
+
+          //alert(object.id + ' - ' + object.get('segregation'));
+        }
+      },
+      error: function(error) {
+        alert("Error: " + error.code + " " + error.message);
+      }
+    });
+
+
+      var options = {
+        chart: {
+          title: 'Data Collection',
+          subtitle: 'showing the result of multiple runs of the simulation'
+        },
+        width: 900,
+        height: 700,
+      };
+
+      var chart = new google.charts.Line(document.getElementById('linechart_material'));
+
+      chart.draw(data, options);
+    }
+
+
+
+    //query.exists("segragation");
+    //query.notEqualTo("segragation", "45.745270711024155");
+
+    
+
+  </script>
+
+
+
+</head>
+
+<body>
+  <div class="container">  
+    <h1>Statistics</h1>
+    <nav class="blue lighten-2">
+      <ul>
+  <li><a href="index.html">About Us</a></li>
+    <li><a href="http://acecs447.github.io/polygons/" target="_blank">Demo</a></li>
+  <li><a href="https://github.com/acecs447/" target="_blank">GitHub</a></li>
+  <li><a href="stat.html" target="_blank">Statistics</a></li>
+      </ul>
+    </nav>
+    <div align="center" style="padding:50px 0px;" class="row">
+          <div id="linechart_material"></div>
+    </div>
+    <footer>
+      &nbsp; &copy;2015 Ace Software Team: Adam, Josh, Michael, Nasif, Natalie, Nisarga
+    </footer>
+  </div>
+
+
+</body>
+
+</html>
